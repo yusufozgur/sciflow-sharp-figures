@@ -1,0 +1,72 @@
+/* Let the swapped-in originals use the figure box's width instead of the 512x192 preview cap. */
+.figure-wrapper .image-container:has(> img.sf-sharp) {
+  max-width: 100% !important;
+  max-height: none !important;
+  width: auto !important;
+  height: auto !important;
+}
+/* HD/SD toggle in the figure's top-right action row */
+.figure-wrapper .actions > .sf-toggle {
+  align-self: center;
+  margin-right: 6px;
+  height: 28px;
+  min-width: 40px;
+  padding: 0 8px;
+  border-radius: 14px;
+  border: 1.5px solid #5f6b7a;
+  background: #fff;
+  color: #5f6b7a;
+  font: 700 12px/1 'Open Sans', Roboto, sans-serif;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  user-select: none;
+}
+.figure-wrapper .actions > .sf-toggle.sf-on {
+  border-color: #1569a8;
+  background: #1569a8;
+  color: #fff;
+}
+.figure-wrapper .actions > .sf-toggle:hover { filter: brightness(0.92); }
+
+.figure-wrapper img.sf-sharp {
+  max-width: 100% !important;
+  max-height: 75vh !important;
+  width: var(--sf-w, auto) !important;
+  height: auto !important;
+  object-fit: contain !important;
+  image-rendering: auto;
+}
+
+/* A width the user dragged to wins over the 75vh height cap. */
+.figure-wrapper img.sf-sharp.sf-sized { max-height: none !important; }
+
+/* Resize handles on the image edges (HD mode only) */
+.figure-wrapper .image-container.sf-resizable { position: relative !important; overflow: visible !important; }
+.figure-wrapper .sf-handle {
+  position: absolute;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.15s;
+  touch-action: none;
+}
+.figure-wrapper .image-container.sf-resizable:hover > .sf-handle,
+html.sf-resizing .figure-wrapper .sf-handle { opacity: 1; }
+.figure-wrapper .sf-handle-left,
+.figure-wrapper .sf-handle-right {
+  top: var(--sf-img-top, 0px); height: var(--sf-img-h, 100%); width: 12px; cursor: ew-resize;
+}
+.figure-wrapper .sf-handle-left  { left: -6px; }
+.figure-wrapper .sf-handle-right { right: -6px; }
+.figure-wrapper .sf-handle-left::after,
+.figure-wrapper .sf-handle-right::after {
+  content: ''; position: absolute; top: 50%; left: 4px; width: 4px; height: 48px;
+  margin-top: -24px; border-radius: 2px; background: #1569a8;
+}
+.figure-wrapper .sf-handle-corner {
+  right: -7px; top: calc(var(--sf-img-top, 0px) + var(--sf-img-h, 100%) - 7px); width: 14px; height: 14px; cursor: nwse-resize;
+  background: #1569a8; border: 2px solid #fff; border-radius: 3px;
+  box-shadow: 0 0 0 1px #1569a8;
+}
+.figure-wrapper .image-container.sf-resizable:hover > img.sf-sharp,
+html.sf-resizing .figure-wrapper img.sf-sharp { outline: 1px dashed #1569a8; outline-offset: 1px; }
+html.sf-resizing, html.sf-resizing * { cursor: ew-resize !important; user-select: none !important; }

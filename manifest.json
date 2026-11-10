@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "SciFlow Sharp Figures",
+  "version": "1.0.0",
+  "description": "Shows the original, full-resolution images inside SciFlow editor figure blocks instead of the 200px previews.",
+  "content_scripts": [
+    {
+      "matches": ["https://app.sciflow.net/*"],
+      "js": ["main.js"],
+      "css": ["style.css"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    }
+  ]
+}
