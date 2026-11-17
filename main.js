@@ -283,5 +283,44 @@
   };
   if (document.documentElement) start(); else document.addEventListener('DOMContentLoaded', start);
 
+  // ---- Paste SVG source as a vector figure ----
+  // Copying an SVG from an editor (e.g. VS Code's text view) puts only its source text on the
+  // clipboard, which SciFlow would insert as text. Image previews copy a PNG at the SVG's nominal
+  // size instead. When a paste carries SVG source and no file, we re-send it to SciFlow as an
+  // .svg file, which SciFlow uploads as a normal (vector) figure.
+  // Ctrl+Shift+V (paste as plain text) keeps the default behaviour.
+  let plainPaste = false;
+  window.addEventListener('keydown', e => {
+    plainPaste = e.shiftKey && (e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V');
+  }, true);
+
+  function svgFromText(text) {
+    if (typeof text !== 'string' || text.length > 20e6) return null;
+    const src = text.replace(/^﻿/, '').trim();
+    if (!/^(<\?xml[\s\S]*?\?>\s*)?(<!--[\s\S]*?-->\s*)*(<!DOCTYPE\s+svg[^>]*>\s*)?<svg[\s>]/i.test(src)) return null;
+    const doc = new DOMParser().parseFromString(src, 'image/svg+xml');
+    if (doc.querySelector('parsererror') || doc.documentElement.localName !== 'svg') return null;
+    return src;
+  }
+
+  window.addEventListener('paste', e => {
+    const isPlain = plainPaste; plainPaste = false;
+    const cd = e.clipboardData;
+    if (e.__sfSvg || isPlain || !cd || cd.files.length) return;
+    const target = e.target instanceof Element ? e.target : e.target?.parentElement;
+    const editor = target?.closest('.ProseMirror');
+    // Leave code blocks (SVG source as code) and figures (captions) alone.
+    if (!editor || target.closest('pre, code, .figure-wrapper')) return;
+    const svg = svgFromText(cd.getData('text/plain'));
+    if (!svg) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const dt = new DataTransfer();
+    dt.items.add(new File([svg], 'pasted-figure.svg', { type: 'image/svg+xml' }));
+    const again = new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true });
+    again.__sfSvg = true;
+    target.dispatchEvent(again);
+  }, true);
+
   window.__sciflowSharpFigures = { files, apply, hasWatchReq: () => !!watchReq, missingTries };
 })();

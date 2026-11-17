@@ -10,6 +10,7 @@ A small Chrome/Chromium extension that shows the **original, full-resolution ima
 - **HD / SD toggle** in each figure's toolbar (top right). Switch back to SciFlow's own preview at any time.
 - **Drag to resize.** In HD mode, drag the left/right edge or the bottom-right corner of an image. Double-click a handle to reset. Sizes are remembered per figure in your browser.
 - **New and replaced images** switch to HD automatically, usually within a few seconds.
+- **Paste SVG source as a figure.** Copy an SVG's source text (for example in VS Code: *Reopen Editor With… → Text Editor*, select all, copy) and paste it into the document: it is added as a vector `.svg` figure instead of text. Copying from an image preview only gives a PNG at the SVG's nominal size. Use Ctrl+Shift+V to paste the source as plain text, and code blocks and figure captions are left alone.
 - **Display only.** Your document, its figure settings and the export are never modified.
 
 ## Install
@@ -31,7 +32,7 @@ Everything runs in the page; nothing is sent anywhere except the SciFlow request
 | File | Purpose |
 | --- | --- |
 | `manifest.json` | Manifest V3, content script on `https://app.sciflow.net/*` |
-| `main.js` | Collects original file URLs, swaps images, HD/SD toggle, resize handles |
+| `main.js` | Collects original file URLs, swaps images, HD/SD toggle, resize handles, SVG paste |
 | `style.css` | Lifts SciFlow's 512×280 px preview cap, styles the toggle and handles |
 | `demo/` | `demo.gif` (README), `demo.mp4` (higher quality) |
 
